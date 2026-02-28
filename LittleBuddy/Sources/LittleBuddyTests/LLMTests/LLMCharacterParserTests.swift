@@ -221,4 +221,130 @@ final class LLMCharacterParserTests: XCTestCase {
         XCTAssertEqual(character.personality.type, .balanced)
         XCTAssertTrue(character.stats.isValid)
     }
+
+    // MARK: - Normalization Edge Cases
+
+    func testNormalizeStatsWithZeroValues() {
+        // Zero values should be clamped to 1
+        let stats = LLMCharacterParser.normalizeStats(hp: 0, attack: 0, defense: 0, speed: 0)
+        XCTAssertEqual(stats.sum, 100)
+        XCTAssertTrue(stats.isValid)
+        XCTAssertGreaterThan(stats.hp, 0)
+        XCTAssertGreaterThan(stats.attack, 0)
+        XCTAssertGreaterThan(stats.defense, 0)
+        XCTAssertGreaterThan(stats.speed, 0)
+    }
+
+    func testNormalizeStatsWithNegativeValues() {
+        // Negative values should be clamped to 1
+        let stats = LLMCharacterParser.normalizeStats(hp: -10, attack: -5, defense: -3, speed: -2)
+        XCTAssertEqual(stats.sum, 100)
+        XCTAssertTrue(stats.isValid)
+        XCTAssertGreaterThan(stats.hp, 0)
+    }
+
+    func testNormalizeStatsWithVeryLargeValues() {
+        let stats = LLMCharacterParser.normalizeStats(hp: 1000, attack: 500, defense: 250, speed: 250)
+        XCTAssertEqual(stats.sum, 100)
+        XCTAssertTrue(stats.isValid)
+    }
+
+    // MARK: - Skill Parsing
+
+    func testParseSkillWithEffect() throws {
+        let response = """
+        {
+          "name": "效果兽",
+          "element": "water",
+          "body_type": "monster",
+          "hp": 40,
+          "attack": 25,
+          "defense": 20,
+          "speed": 15,
+          "skills": [
+            {
+              "name": "治愈之泉",
+              "type": "support",
+              "power": 0,
+              "element": "water",
+              "cooldown": 3,
+              "accuracy": 100,
+              "description": "恢复生命",
+              "effect": {
+                "type": "heal",
+                "amount": 30
+              }
+            }
+          ]
+        }
+        """
+        let character = try LLMCharacterParser.parse(
+            llmResponse: response,
+            ownerID: UUID(),
+            generationPrompt: "test"
+        )
+        XCTAssertEqual(character.skills.count, 1)
+        XCTAssertNotNil(character.skills.first?.effect)
+        XCTAssertEqual(character.skills.first?.effect?.type, .heal)
+        XCTAssertEqual(character.skills.first?.effect?.amount, 30)
+    }
+
+    func testParseSkillWithUnknownEffectType() throws {
+        let response = """
+        {
+          "name": "未知兽",
+          "element": "fire",
+          "body_type": "monster",
+          "hp": 40,
+          "attack": 25,
+          "defense": 20,
+          "speed": 15,
+          "skills": [
+            {
+              "name": "攻击",
+              "type": "attack",
+              "power": 40,
+              "cooldown": 0,
+              "effect": {
+                "type": "unknown_effect_type"
+              }
+            }
+          ]
+        }
+        """
+        let character = try LLMCharacterParser.parse(
+            llmResponse: response,
+            ownerID: UUID(),
+            generationPrompt: "test"
+        )
+        // Unknown effect type should result in nil effect
+        XCTAssertNil(character.skills.first?.effect)
+    }
+
+    func testParseWithMaxSkillsTruncates() throws {
+        let skillsJSON = (0..<6).map { i in
+            """
+            {"name": "技能\(i)", "type": "attack", "power": \(30 + i * 5), "cooldown": 0}
+            """
+        }.joined(separator: ",\n")
+
+        let response = """
+        {
+          "name": "多技能兽",
+          "element": "fire",
+          "body_type": "monster",
+          "hp": 40,
+          "attack": 25,
+          "defense": 20,
+          "speed": 15,
+          "skills": [\(skillsJSON)]
+        }
+        """
+        let character = try LLMCharacterParser.parse(
+            llmResponse: response,
+            ownerID: UUID(),
+            generationPrompt: "test"
+        )
+        XCTAssertLessThanOrEqual(character.skills.count, Character.maxSkillCount)
+    }
 }

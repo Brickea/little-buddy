@@ -90,6 +90,43 @@ final class BattleEngineTests: XCTestCase {
         XCTAssertLessThan(hp[defender.id]!, 100)
     }
 
+    func testExecuteTurnReturnsDamageGreaterThanZero() {
+        let (attacker, defender) = makePair()
+        let skill = Skill(name: "攻击", type: .attack, power: 50, element: .normal)
+        var hp: [UUID: Int] = [attacker.id: 100, defender.id: 100]
+        let result = BattleEngine.executeTurn(attacker: attacker, defender: defender, skill: skill, currentHP: &hp)
+        XCTAssertGreaterThan(result.damage, 0)
+        XCTAssertEqual(result.attackerID, attacker.id)
+        XCTAssertEqual(result.defenderID, defender.id)
+    }
+
+    func testExecuteTurnWithElementalBonus() {
+        let attacker = makeCharacter(element: .fire, attack: 40)
+        let defender = makeCharacter(element: .wind, defense: 20)
+        let skill = Skill(name: "火焰", type: .attack, power: 60, element: .fire)
+        var hp: [UUID: Int] = [attacker.id: 100, defender.id: 100]
+        let result = BattleEngine.executeTurn(attacker: attacker, defender: defender, skill: skill, currentHP: &hp)
+        XCTAssertTrue(result.isElementalBonus)
+    }
+
+    func testBattleEndsWhenHPGoesNegative() {
+        let (attacker, defender) = makePair()
+        let hp: [UUID: Int] = [attacker.id: 50, defender.id: -10]
+        let state = BattleEngine.checkState(currentHP: hp)
+        guard case .finished(let winnerID) = state else {
+            return XCTFail("Battle should be finished when HP is negative")
+        }
+        XCTAssertEqual(winnerID, attacker.id)
+    }
+
+    func testZeroPowerSkillDoesMinimumDamage() {
+        let (attacker, defender) = makePair()
+        let skill = Skill(name: "无力", type: .attack, power: 0, element: .normal)
+        let (damage, _) = BattleEngine.calculateDamage(attacker: attacker, defender: defender, skill: skill)
+        // Even with 0 power, minimum damage should be 1
+        XCTAssertGreaterThanOrEqual(damage, 1)
+    }
+
     // MARK: - Helpers
 
     private func makePair() -> (Character, Character) {

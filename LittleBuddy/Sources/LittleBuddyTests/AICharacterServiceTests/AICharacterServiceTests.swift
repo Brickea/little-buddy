@@ -80,6 +80,103 @@ final class AICharacterServiceTests: XCTestCase {
         XCTAssertEqual(stats2.sum, 100)
     }
 
+    // MARK: - Personality Detection
+
+    func testPersonalityDetection() {
+        XCTAssertEqual(AICharacterService.detectPersonality(from: "勇敢的战士"), .aggressive)
+        XCTAssertEqual(AICharacterService.detectPersonality(from: "防御型铁盾"), .defensive)
+        XCTAssertEqual(AICharacterService.detectPersonality(from: "聪明的狐狸"), .cunning)
+        XCTAssertEqual(AICharacterService.detectPersonality(from: "疯狂的小怪兽"), .wild)
+        XCTAssertEqual(AICharacterService.detectPersonality(from: "普通的角色"), .balanced)
+    }
+
+    // MARK: - Size Detection
+
+    func testSizeDetection() {
+        XCTAssertEqual(AICharacterService.detectSize(from: "巨大的怪兽"), .large)
+        XCTAssertEqual(AICharacterService.detectSize(from: "大恐龙"), .large)
+        XCTAssertEqual(AICharacterService.detectSize(from: "迷你小猫"), .small)
+        XCTAssertEqual(AICharacterService.detectSize(from: "普通大小的机器人"), .medium)
+    }
+
+    // MARK: - Name Extraction
+
+    func testExtractName() {
+        XCTAssertEqual(AICharacterService.extractName(from: "超级闪电猫"), "超级闪电猫")
+        XCTAssertEqual(AICharacterService.extractName(from: ""), "小伙伴")
+        XCTAssertEqual(AICharacterService.extractName(from: "   "), "小伙伴")
+        // Long names get truncated to 8 characters
+        let longName = "一个非常非常长的角色名称"
+        let extracted = AICharacterService.extractName(from: longName)
+        XCTAssertLessThanOrEqual(extracted.count, 8)
+    }
+
+    // MARK: - Element Color
+
+    func testElementColorReturnsHexString() {
+        for element in Element.allCases {
+            let color = AICharacterService.elementColor(element)
+            XCTAssertTrue(color.hasPrefix("#"), "Color for \(element) should start with #")
+            XCTAssertEqual(color.count, 7, "Color for \(element) should be #RRGGBB format")
+        }
+    }
+
+    // MARK: - Local Generation (End-to-End)
+
+    func testGenerateLocallyProducesValidCharacter() {
+        let service = AICharacterService()
+        let character = service.generateLocally(from: "一个会喷火的蓝色机器人")
+
+        XCTAssertFalse(character.name.isEmpty)
+        XCTAssertTrue(character.stats.isValid)
+        XCTAssertEqual(character.stats.sum, 100)
+        XCTAssertFalse(character.skills.isEmpty)
+        XCTAssertLessThanOrEqual(character.skills.count, Character.maxSkillCount)
+        XCTAssertEqual(character.element, .fire)
+        XCTAssertEqual(character.appearance.bodyType, .robot)
+        XCTAssertNoThrow(try DSLValidator.validate(character))
+    }
+
+    func testGenerateLocallyWithWaterDescription() {
+        let service = AICharacterService()
+        let character = service.generateLocally(from: "水精灵")
+
+        XCTAssertEqual(character.element, .water)
+        XCTAssertTrue(character.stats.isValid)
+        XCTAssertNoThrow(try DSLValidator.validate(character))
+    }
+
+    func testGenerateLocallyWithDefaultDescription() {
+        let service = AICharacterService()
+        let character = service.generateLocally(from: "一个普通的怪兽")
+
+        XCTAssertEqual(character.element, .normal)
+        XCTAssertEqual(character.appearance.bodyType, .monster)
+        XCTAssertTrue(character.stats.isValid)
+        XCTAssertNoThrow(try DSLValidator.validate(character))
+    }
+
+    // MARK: - Stats Weighting
+
+    func testGenerateStatsWithSpeedKeyword() {
+        let stats = AICharacterService.generateStats(description: "超级快的闪电猫")
+        XCTAssertTrue(stats.isValid)
+        // Speed should be relatively high when speed keywords present
+        XCTAssertGreaterThan(stats.speed, 0)
+    }
+
+    func testGenerateStatsWithDefenseKeyword() {
+        let stats = AICharacterService.generateStats(description: "坚硬的铁盾甲兽")
+        XCTAssertTrue(stats.isValid)
+        XCTAssertGreaterThan(stats.defense, 0)
+    }
+
+    func testGenerateStatsEmptyDescription() {
+        let stats = AICharacterService.generateStats(description: "")
+        XCTAssertTrue(stats.isValid)
+        XCTAssertEqual(stats.sum, 100)
+    }
+
     // MARK: - Helpers
 
     private func makeTestCharacter(element: Element) -> Character {
