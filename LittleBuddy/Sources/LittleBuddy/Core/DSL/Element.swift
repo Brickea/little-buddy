@@ -29,6 +29,36 @@ enum Element: String, Codable, CaseIterable {
         }
     }
 
+    /// 元素的 Emoji 图标
+    var emoji: String {
+        switch self {
+        case .fire:      return "🔥"
+        case .water:     return "💧"
+        case .wind:      return "🌪️"
+        case .earth:     return "🪨"
+        case .lightning: return "⚡"
+        case .ice:       return "❄️"
+        case .shadow:    return "🌑"
+        case .light:     return "☀️"
+        case .normal:    return "⭐"
+        }
+    }
+
+    /// 元素中文名
+    var displayName: String {
+        switch self {
+        case .fire:      return "火"
+        case .water:     return "水"
+        case .wind:      return "风"
+        case .earth:     return "土"
+        case .lightning: return "雷"
+        case .ice:       return "冰"
+        case .shadow:    return "暗"
+        case .light:     return "光"
+        case .normal:    return "无"
+        }
+    }
+
     /// 是否属于基础包，不属于则需要扩展包
     var isBase: Bool {
         switch self {
