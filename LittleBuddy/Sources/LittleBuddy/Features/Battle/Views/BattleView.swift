@@ -136,7 +136,7 @@ private struct CharacterBattleCard: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            CharacterAvatarView(character: character, size: 56)
+            CharacterSpriteView(character: character, size: 56)
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
