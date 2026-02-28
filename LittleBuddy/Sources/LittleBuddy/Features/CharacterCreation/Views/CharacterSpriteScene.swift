@@ -445,13 +445,18 @@ final class CharacterSpriteScene: SKScene {
         addChild(node)
     }
 
+    private static let sizeScaleSmall: CGFloat = 0.8
+    private static let sizeScaleMedium: CGFloat = 1.0
+    private static let sizeScaleLarge: CGFloat = 1.15
+    private static let sizeScaleGiant: CGFloat = 1.3
+
     private var sizeScale: CGFloat {
         let baseScale = min(size.width, size.height) / 120.0
         switch character.appearance.size {
-        case .small:  return baseScale * 0.8
-        case .medium: return baseScale * 1.0
-        case .large:  return baseScale * 1.15
-        case .giant:  return baseScale * 1.3
+        case .small:  return baseScale * Self.sizeScaleSmall
+        case .medium: return baseScale * Self.sizeScaleMedium
+        case .large:  return baseScale * Self.sizeScaleLarge
+        case .giant:  return baseScale * Self.sizeScaleGiant
         }
     }
 

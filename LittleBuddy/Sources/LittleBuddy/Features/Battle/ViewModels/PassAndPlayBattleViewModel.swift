@@ -29,6 +29,8 @@ final class PassAndPlayBattleViewModel: ObservableObject {
     private var player2Cooldowns: [UUID: Int] = [:]
     private let firstPlayer: Int // 1 or 2
 
+    private static let turnTransitionDelay: Double = 1.5
+
     init(player1: Character, player2: Character) {
         self.player1Character = player1
         self.player2Character = player2
@@ -114,7 +116,7 @@ final class PassAndPlayBattleViewModel: ObservableObject {
 
         // 延迟后显示传屏提示
         Task {
-            try? await Task.sleep(for: .seconds(1.5))
+            try? await Task.sleep(for: .seconds(Self.turnTransitionDelay))
             phase = .passToPlayer(nextPlayer)
         }
     }
