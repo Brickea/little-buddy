@@ -75,7 +75,7 @@ enum CharacterPromptTemplate {
     - 如果描述强调力量/攻击，attack 偏高
     - 如果描述强调防御/护甲/坚硬，defense 偏高
     - 如果描述强调耐力/血量厚，hp 偏高
-    - 每项属性最少为 5
+    - 每项属性最少为 1
 
     请根据孩子的描述生成角色 JSON。
     """
