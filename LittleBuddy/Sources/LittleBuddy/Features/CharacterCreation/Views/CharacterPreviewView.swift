@@ -6,7 +6,7 @@ struct CharacterPreviewView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            CharacterAvatarView(character: character, size: 80)
+            CharacterSpriteView(character: character, size: 100)
 
             HStack {
                 Text(character.name)

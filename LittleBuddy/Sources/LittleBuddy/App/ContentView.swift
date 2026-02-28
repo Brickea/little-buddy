@@ -62,6 +62,16 @@ struct ContentView: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.large)
+
+            NavigationLink {
+                PassAndPlaySetupView()
+            } label: {
+                Label("双人对战 👫", systemImage: "person.2.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .tint(.orange)
         }
     }
 
