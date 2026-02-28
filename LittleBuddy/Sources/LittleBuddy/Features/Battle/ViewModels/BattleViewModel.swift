@@ -205,7 +205,7 @@ final class BattleViewModel: ObservableObject {
                 currentMessage = "🎉 你赢了！太棒了！"
             } else {
                 log("😢 你输了……下次加油！", isSystem: true)
-                currentMessage = "😢 你输了……下次再来！"
+                currentMessage = "😢 你输了……下次加油！"
             }
             return true
         }

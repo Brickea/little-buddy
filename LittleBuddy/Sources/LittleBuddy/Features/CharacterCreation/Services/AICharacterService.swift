@@ -197,15 +197,7 @@ struct AICharacterService {
 
         // Adjust remainder to sum exactly to totalPoints
         let diff = totalPoints - (hp + attack + defense + speed)
-        if diff > 0 {
-            hp += diff
-        } else if diff < 0 {
-            // Remove from the highest stat
-            let maxVal = max(hp, attack, defense)
-            if hp == maxVal { hp += diff }
-            else if attack == maxVal { attack += diff }
-            else { defense += diff }
-        }
+        hp += diff
 
         return CharacterStats(hp: hp, attack: attack, defense: defense, speed: speed, totalPoints: totalPoints)
     }
@@ -224,8 +216,10 @@ struct AICharacterService {
         // Add 1–3 more skills from the pool (avoid duplicates by name)
         let usedNames = Set(skills.map(\.name))
         let remaining = pool.filter { !usedNames.contains($0.name) }
-        let extra = Array(remaining.shuffled().prefix(Int.random(in: 1...min(3, remaining.count))))
-        skills.append(contentsOf: extra)
+        if !remaining.isEmpty {
+            let extra = Array(remaining.shuffled().prefix(Int.random(in: 1...min(3, remaining.count))))
+            skills.append(contentsOf: extra)
+        }
 
         return Array(skills.prefix(Character.maxSkillCount))
     }
