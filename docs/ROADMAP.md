@@ -42,13 +42,13 @@ gantt
 - [x] 搭建基础 iOS 项目结构（SwiftUI + Swift Package Manager）
 - [x] 实现最简 DSL 解析器（角色属性、技能、元素系统、DSL 验证器）
 - [x] 集成 LLM API（ChatAnywhere / OpenAI 兼容），实现自然语言 → DSL 转换（含本地关键词匹配回退）
-- [ ] 使用 SpriteKit 渲染简单角色形象（火柴人/色块）
+- [x] 使用 SpriteKit 渲染简单角色形象（火柴人/色块）
 
 ### 0.2 最简对战系统
 
 - [x] 本地回合制对战引擎核心逻辑（伤害计算、元素克制、先手判定）
 - [x] 最简对战 UI：选择技能 → 显示伤害 → 胜负判定
-- [ ] 支持 2 台设备本地传屏（Pass-and-Play 模式）
+- [x] 支持 2 台设备本地传屏（Pass-and-Play 模式）
 
 ### 0.3 用户测试
 
@@ -198,5 +198,7 @@ gantt
 - [x] 战斗引擎核心逻辑实现（伤害计算、元素克制、先手判定）
 - [x] 角色创建 UI 原型（文本输入 + 本地关键词匹配生成）
 - [x] 单元测试覆盖（DSL 验证、战斗引擎共 23 个测试用例）
-- [ ] Phase 0 剩余工作：LLM API 集成、SpriteKit 渲染、Pass-and-Play
+- [x] LLM API 集成（ChatAnywhere / OpenAI 兼容，含本地回退）
+- [x] SpriteKit 角色渲染（火柴人/色块风格）
+- [x] Pass-and-Play 本地双人对战模式
 - [ ] Phase 0 用户测试

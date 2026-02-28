@@ -1,4 +1,5 @@
 import SpriteKit
+import UIKit
 
 /// SpriteKit 场景：渲染简单角色形象（火柴人/色块）
 /// Phase 0 使用基础几何图形 + 元素颜色表示角色

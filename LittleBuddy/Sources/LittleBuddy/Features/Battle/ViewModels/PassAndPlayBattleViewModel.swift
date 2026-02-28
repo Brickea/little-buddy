@@ -110,7 +110,7 @@ final class PassAndPlayBattleViewModel: ObservableObject {
 
         // 切换到下一个玩家
         let nextPlayer = player == 1 ? 2 : 1
-        if nextPlayer <= firstPlayer { turnNumber += 1 }
+        if nextPlayer == firstPlayer { turnNumber += 1 }
 
         // 延迟后显示传屏提示
         Task {
