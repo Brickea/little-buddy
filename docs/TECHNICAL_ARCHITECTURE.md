@@ -55,12 +55,12 @@
 
 ```
 LittleBuddy/
-├── LittleBuddy.xcodeproj/
+├── Package.swift                        # Swift Package Manager 配置
 ├── Sources/
 │   └── LittleBuddy/
 │       ├── App/
-│       │   ├── LittleBuddyApp.swift       # App 入口
-│       │   └── AppDelegate.swift
+│       │   ├── LittleBuddyApp.swift       # App 入口（@main）
+│       │   └── ContentView.swift
 │       ├── Features/
 │       │   ├── CharacterCreation/         # 角色创建功能
 │       │   │   ├── Views/

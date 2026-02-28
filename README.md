@@ -39,8 +39,8 @@
 git clone https://github.com/Brickea/little-buddy.git
 cd little-buddy
 
-# 打开 Xcode 项目
-open LittleBuddy/LittleBuddy.xcodeproj
+# 使用 Xcode 打开 Swift Package
+open LittleBuddy/Package.swift
 ```
 
 **依赖要求**
