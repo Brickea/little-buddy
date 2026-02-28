@@ -29,7 +29,7 @@ Phase 3: 扩展 & 硬件     2027 Q3+     ░░░░░░░░░░░░
 
 - [x] 搭建基础 iOS 项目结构（SwiftUI + Swift Package Manager）
 - [x] 实现最简 DSL 解析器（角色属性、技能、元素系统、DSL 验证器）
-- [ ] 集成 LLM API（GPT-4o 或 Claude），实现自然语言 → DSL 转换（当前为本地关键词匹配占位实现）
+- [x] 集成 LLM API（ChatAnywhere / OpenAI 兼容），实现自然语言 → DSL 转换（含本地关键词匹配回退）
 - [ ] 使用 SpriteKit 渲染简单角色形象（火柴人/色块）
 
 ### 0.2 最简对战系统

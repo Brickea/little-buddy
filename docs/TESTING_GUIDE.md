@@ -54,7 +54,34 @@ open LittleBuddy.xcodeproj
 
 ---
 
-## 第二步：配置签名
+## 第二步：配置 API Key（AI 角色生成）
+
+Little Buddy 已集成 ChatAnywhere LLM API，可以使用真实 AI 来根据描述生成角色。
+
+### 配置方式
+
+在 Xcode 中为 App 配置环境变量：
+
+1. 点击 Xcode 顶部的 **Scheme**（`LittleBuddy` 旁边的运行目标）
+2. 选择 **Edit Scheme...**
+3. 在左侧选择 **Run**
+4. 点击 **Arguments** 标签
+5. 在 **Environment Variables** 区域添加：
+   - Name: `CHAT_ANYWHERE_API_KEY`
+   - Value: `你的 ChatAnywhere API Key`
+6. 确保勾选了这个变量
+
+> 💡 如果没有 API Key，App 仍然可以正常运行——角色会使用本地关键词匹配生成。获取免费 API Key：https://api.chatanywhere.org/
+
+### 验证 API Key 是否生效
+
+创建角色时：
+- **有 AI**：角色名字更有创意，技能描述更丰富，属性分配更贴合描述
+- **无 AI（回退模式）**：角色名字取自描述前几个字，技能从预设池生成
+
+---
+
+## 第三步：配置签名
 
 1. 在 Xcode 左侧导航器中，点击项目文件（蓝色图标）
 2. 选择 **LittleBuddy** target
@@ -68,7 +95,7 @@ open LittleBuddy.xcodeproj
 
 ---
 
-## 第三步：在 iPhone 上运行
+## 第四步：在 iPhone 上运行
 
 1. 用 USB 数据线连接 iPhone 和 Mac
 2. 在 iPhone 上点击 **信任此电脑**
@@ -82,9 +109,9 @@ open LittleBuddy.xcodeproj
 
 ---
 
-## 第四步：测试场景
+## 第五步：测试场景
 
-### 测试 1：创建角色 ✨
+### 测试 1：创建角色 ✨（AI 生成）
 
 1. 打开 App，你会看到首页
 2. 点击 **"创建新伙伴 ✨"**
@@ -95,6 +122,9 @@ open LittleBuddy.xcodeproj
    - `可爱的水精灵` → 应该生成水系角色
    - `一个神秘的小怪兽` → 应该生成无属性怪兽
 4. 点击 **"生成角色 ✨"**
+
+> 💡 **LLM AI 模式**：如果已配置 ChatAnywhere API Key，角色将由真实 AI（GPT-4o-mini）生成，角色名字、技能、属性会更贴合你的描述。如果网络不可用或 API Key 未配置，会自动回退到本地关键词匹配生成。
+
 5. **检查要点**：
    - [ ] 角色名称显示正确？
    - [ ] 元素属性是否与描述匹配？（火、水、风、土）
@@ -162,7 +192,7 @@ open LittleBuddy.xcodeproj
 
 | 限制 | 说明 | 计划改进 |
 |------|------|---------|
-| 角色生成 | 使用关键词匹配，非真实 AI | Phase 1 接入 LLM API |
+| 角色生成 | 已集成 LLM API（ChatAnywhere），网络不可用时回退到关键词匹配 | 继续优化 Prompt，增加引导式对话 |
 | 角色形象 | Emoji 表示 | Phase 1 使用 AI 生成图片 |
 | 数据存储 | 内存存储，关闭后丢失 | Phase 1 使用 SwiftData |
 | 对战模式 | 仅 AI 对战 | Phase 1 添加联网对战 |
@@ -196,3 +226,6 @@ A: 这是 Phase 0 原型的正常情况，暂未添加 App 图标
 
 ### Q: 关闭 App 后角色消失了
 A: Phase 0 使用内存存储，这是预期行为。Phase 1 将添加持久化存储
+
+### Q: 创建角色时提示 "LLM 生成失败"
+A: 这是正常的——如果 API Key 未配置或网络不通，会自动回退到本地关键词匹配生成角色。如果需要 AI 生成，请在 Xcode Scheme 中配置 `CHAT_ANYWHERE_API_KEY` 环境变量（参考第二步）

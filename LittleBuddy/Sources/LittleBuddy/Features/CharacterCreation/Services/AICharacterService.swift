@@ -1,17 +1,50 @@
 import Foundation
 
 /// AI 角色生成服务
-/// Phase 0: 基于关键词解析的本地生成；Phase 1 接入真实 LLM API
+/// 优先使用 LLM API（ChatAnywhere），失败时回退到本地关键词匹配
 struct AICharacterService {
     private let ownerID: UUID
+    private let llmService: LLMService
 
-    init(ownerID: UUID = UUID()) {
+    init(ownerID: UUID = UUID(), llmService: LLMService = LLMService()) {
         self.ownerID = ownerID
+        self.llmService = llmService
     }
 
     /// 根据自然语言描述生成角色配置
+    /// 优先调用 LLM API，失败时回退到本地关键词匹配
     func generate(from description: String) async throws -> Character {
-        // TODO: Phase 1 — 替换为真实 LLM API 调用
+        // 如果 API Key 已配置，优先使用 LLM
+        if APIConfig.isConfigured {
+            do {
+                return try await generateWithLLM(from: description)
+            } catch {
+                // LLM 失败时回退到本地生成
+                print("[AICharacterService] LLM 生成失败，回退到本地: \(error.localizedDescription)")
+            }
+        }
+
+        // 本地关键词匹配回退
+        return generateLocally(from: description)
+    }
+
+    // MARK: - LLM Generation
+
+    /// 使用 LLM API 生成角色
+    private func generateWithLLM(from description: String) async throws -> Character {
+        let messages = CharacterPromptTemplate.buildMessages(description: description)
+        let response = try await llmService.chatCompletion(messages: messages, temperature: 0.7)
+        return try LLMCharacterParser.parse(
+            llmResponse: response,
+            ownerID: ownerID,
+            generationPrompt: description
+        )
+    }
+
+    // MARK: - Local Fallback Generation
+
+    /// 本地关键词匹配生成（Phase 0 回退方案）
+    func generateLocally(from description: String) -> Character {
         let element = Self.detectElement(from: description)
         let bodyType = Self.detectBodyType(from: description)
         let personality = Self.detectPersonality(from: description)
