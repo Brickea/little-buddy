@@ -10,11 +10,23 @@
 
 > ⚠️ 项目于 2026-02-28 完成初始化（设计文档、代码框架、核心 DSL 和战斗引擎原型）。原计划 Phase 0 起始于 Q1，但实际编码从 Q1 末启动，因此各阶段时间线整体后移。
 
-```
-Phase 0: 验证 (MVP)      2026 Q2      ████████░░░░
-Phase 1: 核心玩法        2026 Q3-Q4   ░░░░████████
-Phase 2: 社交 & 商业化   2027 Q1-Q2   ░░░░░░░░████
-Phase 3: 扩展 & 硬件     2027 Q3+     ░░░░░░░░░░░░
+```mermaid
+gantt
+    title 开发里程碑
+    dateFormat YYYY-MM
+    axisFormat %Y Q%q
+
+    section Phase 0
+    验证 (MVP)           :active, p0, 2026-04, 2026-06
+
+    section Phase 1
+    核心玩法              :p1, 2026-07, 2026-12
+
+    section Phase 2
+    社交 & 商业化         :p2, 2027-01, 2027-06
+
+    section Phase 3
+    扩展 & 硬件           :p3, 2027-07, 2027-12
 ```
 
 ---
