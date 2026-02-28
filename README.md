@@ -31,6 +31,7 @@
 | [技术架构](docs/TECHNICAL_ARCHITECTURE.md) | 系统架构、AI 集成、技术栈 |
 | [角色 DSL 规范](docs/CHARACTER_DSL.md) | 角色定义语言规范 |
 | [开发路线图](docs/ROADMAP.md) | 分阶段开发计划 |
+| [iPhone 测试指南](docs/TESTING_GUIDE.md) | 如何在 iPhone 上测试原型 |
 
 ## 快速开始（开发环境）
 
@@ -39,8 +40,8 @@
 git clone https://github.com/Brickea/little-buddy.git
 cd little-buddy
 
-# 打开 Xcode 项目
-open LittleBuddy/LittleBuddy.xcodeproj
+# 使用 Xcode 打开 Swift Package
+open LittleBuddy/Package.swift
 ```
 
 **依赖要求**
